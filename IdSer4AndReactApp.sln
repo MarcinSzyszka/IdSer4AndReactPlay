@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adverts.App", "Adverts.App\Adverts.App.csproj", "{A63F66BD-C5BF-4586-8F85-EB80FD9600FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerAspNetIdentity", "IdentityServerAspNetIdentity\IdentityServerAspNetIdentity.csproj", "{065FE45C-1524-4775-9CC1-62B7563E65FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A63F66BD-C5BF-4586-8F85-EB80FD9600FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A63F66BD-C5BF-4586-8F85-EB80FD9600FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A63F66BD-C5BF-4586-8F85-EB80FD9600FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A63F66BD-C5BF-4586-8F85-EB80FD9600FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{065FE45C-1524-4775-9CC1-62B7563E65FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{065FE45C-1524-4775-9CC1-62B7563E65FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{065FE45C-1524-4775-9CC1-62B7563E65FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{065FE45C-1524-4775-9CC1-62B7563E65FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A27E160-4E0F-48D2-AF74-B3A736BBDCB7}
+	EndGlobalSection
+EndGlobal
