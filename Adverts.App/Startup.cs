@@ -1,10 +1,13 @@
+using System;
 using IdentityModel;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,14 +29,17 @@ namespace Adverts.App
                 .AddAuthorization()
                 .AddJsonFormatters();
 
+            services.AddSingleton<IDistributedCache, MemoryDistributedCache>();
 
-            services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                .AddIdentityServerAuthentication(options =>
                 {
                     options.Authority = "https://localhost:44375/";
                     options.RequireHttpsMetadata = true;
-
-                    options.Audience = "api1";
+                    options.ApiName = "api1";
+                    options.ApiSecret = "secret";
+                    options.EnableCaching = true;
+                    options.CacheDuration = TimeSpan.FromMinutes(1);
                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -43,8 +49,6 @@ namespace Adverts.App
             {
                 configuration.RootPath = "ClientApp/build";
             });
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

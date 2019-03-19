@@ -24,6 +24,9 @@ namespace IdentityServerAspNetIdentity
             return new List<ApiResource>
             {
                 new ApiResource("api1", "My API")
+                {
+                    ApiSecrets = {new Secret("secret".Sha256())}
+                }
             };
         }
 
@@ -91,8 +94,8 @@ namespace IdentityServerAspNetIdentity
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     RequireClientSecret = false,
-                    RequireConsent = false,
-
+                    RequireConsent = true,
+                    AccessTokenType = AccessTokenType.Reference,
                     RedirectUris =           { "https://localhost:44381/callback" },
                     PostLogoutRedirectUris = { "https://localhost:44381/" },
                     AllowedCorsOrigins =     { "https://localhost:44381/" },
@@ -103,7 +106,7 @@ namespace IdentityServerAspNetIdentity
                         IdentityServerConstants.StandardScopes.Profile,
                         "api1"
                     }
-                }
+                    }
             };
         }
     }
