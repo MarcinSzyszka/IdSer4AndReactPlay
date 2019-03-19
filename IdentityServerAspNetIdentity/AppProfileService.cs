@@ -40,6 +40,8 @@ namespace IdentityServerAspNetIdentity
             var roles = _context.UserRoles.Include(r => r.Role).Where(r => r.UserId == context.Subject.GetSubjectId() && context.RequestedResources.ApiResources.Select(res => res.Name).Contains(r.Role.AppName));
 
             context.IssuedClaims.AddRange(roles.Select(r => new Claim(JwtClaimTypes.Role, r.Role.Name)));
+
+            context.IssuedClaims.Add(new Claim(JwtClaimTypes.Name, context.Subject.GetDisplayName()));
         }
     }
 }
