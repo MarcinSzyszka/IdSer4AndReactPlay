@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Adverts.App.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class SampleDataController : Controller
     {
         private static string[] Summaries = new[]
