@@ -96,9 +96,9 @@ namespace IdentityServerAspNetIdentity
                     RequireClientSecret = false,
                     RequireConsent = true,
                     AccessTokenType = AccessTokenType.Reference,
-                    RedirectUris =           { "https://localhost:44381/callback" },
+                    RedirectUris =           { "https://localhost:44381/callback", "https://localhost:44381/silentSignInCallback.html"  },
                     PostLogoutRedirectUris = { "https://localhost:44381/" },
-                    AllowedCorsOrigins =     { "https://localhost:44381/" },
+                    AllowedCorsOrigins =     { "https://localhost:44381" },
 
                     AllowedScopes =
                     {
