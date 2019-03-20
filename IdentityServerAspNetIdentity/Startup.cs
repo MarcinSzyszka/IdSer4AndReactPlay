@@ -11,9 +11,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading.Tasks;
 using IdentityServer4;
 using IdentityServer4.Configuration;
 using IdentityServer4.Services;
+using IdentityServerAspNetIdentity.Data.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace IdentityServerAspNetIdentity
@@ -46,16 +48,29 @@ namespace IdentityServerAspNetIdentity
                 iis.AutomaticAuthentication = false;
             });
 
+            var idsr4Builder = services.AddIdentityServer()
+                // The AddDeveloperSigningCredential extension creates temporary key material for signing tokens.
+                // This might be useful to get started, but needs to be replaced by some persistent key material for production scenarios.
+                // See http://docs.identityserver.io/en/release/topics/crypto.html#refcrypto for more information.
+                .AddDeveloperSigningCredential()
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly("IdentityServerAspNetIdentity"));
+                })
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), sql => sql.MigrationsAssembly("IdentityServerAspNetIdentity"));
 
-            var builder = services.AddIdentityServer()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                .AddInMemoryApiResources(Config.GetApis())
-                .AddInMemoryClients(Config.GetClients())
-                .AddAspNetIdentity<ApplicationUser>();
+                    // this enables automatic token cleanup. this is optional. 
+                    //options.EnableTokenCleanup = true;
+                    //options.TokenCleanupInterval = 30;
+                })
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddProfileService<AppProfileService>();
 
             if (Environment.IsDevelopment())
             {
-                builder.AddDeveloperSigningCredential();
+                idsr4Builder.AddDeveloperSigningCredential();
             }
             else
             {
@@ -71,54 +86,12 @@ namespace IdentityServerAspNetIdentity
                     options.ClientSecret = "<insert here>";
                 });
 
-
-            //services.AddScoped<IProfileService, AppProfileService>();
-            //var builder = services.AddIdentityServer(options =>
-            //{
-
-            //})
-            //    .AddInMemoryIdentityResources(Config.GetIdentityResources())
-            //    .AddInMemoryApiResources(Config.GetApis())
-            //    .AddInMemoryClients(Config.GetClients())
-            //    .AddAspNetIdentity<ApplicationUser>();
-
-            //if (Environment.IsDevelopment())
-            //{
-            //    builder.AddDeveloperSigningCredential();
-            //}
-            //else
-            //{
-            //    throw new Exception("need to configure key material");
-            //}
-
-            //services.AddAuthentication(options =>
-            //    {
-            //        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            //        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            //    })
-            //    .AddJwtBearer(options =>
-            //    {
-            //        // base-address of your identityserver
-            //        options.Authority = "https://localhost:44375/";
-
-            //        // name of the API resource
-            //        options.Audience = "api1";
-
-            //        options.RequireHttpsMetadata = true;
-            //    })
-            //    .AddGoogle(options =>
-            //    {
-            //        // register your IdentityServer with Google at https://console.developers.google.com
-            //        // enable the Google+ API
-            //        // set the redirect URI to https://localhost:44375/signin-google
-            //        options.ClientId = "copy client ID from Google here";
-            //        options.ClientSecret = "copy client secret from Google here";
-            //    }); ;     
-
-            services.AddScoped<IProfileService, AppProfileService>();
+            services.AddScoped<IIdentityServerDbInitializer, IdentityServerDbInitializer>();
+            services.AddScoped<IUsersDbInitializer, UsersDbInitializer>();
+            services.AddCors();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IIdentityServerDbInitializer identityServerDbInitializer, IUsersDbInitializer usersDbInitializer)
         {
             if (Environment.IsDevelopment())
             {
@@ -134,6 +107,14 @@ namespace IdentityServerAspNetIdentity
             app.UseStaticFiles();
             app.UseIdentityServer();
             app.UseMvcWithDefaultRoute();
+            app.UseCors(b =>
+            {
+                b.AllowAnyOrigin();
+                b.AllowAnyMethod();
+            });
+
+            identityServerDbInitializer.SeedAsync().GetAwaiter().GetResult();
+            usersDbInitializer.SeedAsync().GetAwaiter().GetResult();
         }
     }
 }
