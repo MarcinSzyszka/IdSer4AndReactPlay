@@ -1,38 +1,23 @@
 import React, { Component } from 'react';
-import { UserManager, OidcClient } from 'oidc-client'
+import { UserManager } from 'oidc-client'
 
 export class Callback extends Component {
     constructor(props) {
         super(props);
-
-        // new UserManager({ response_mode: "query" }).signinRedirectCallback().then(function (aaa) {
-        //     debugger;
-        //     window.location = "index.html";
-        // }).catch(function (e) {
-        //     debugger;
-        //     console.error(e);
-        // });
-
-        // new OidcClient().processSigninResponse().then(function(response) {
-        //     console.log("signin response success", response);
-        // }).catch(function(err) {
-        //     console.error(err);
-        // });
+        this.state = {};
     }
-    componentDidMount() {
 
-        new UserManager({ response_mode: "query" }).signinRedirectCallback().then(function (aaa) {
-            debugger;
-            window.location = "index.html";
+    componentDidMount() {
+        new UserManager({ response_mode: "query" }).signinRedirectCallback().then(function (user) {
+            window.location = user.state;
         }).catch(function (e) {
-            debugger;
             console.error(e);
         });
 
-        new OidcClient().processSigninResponse().then(function(response) {
-            console.log("signin response success", response);
-        }).catch(function(err) {
-            console.error(err);
+        new UserManager().signinSilentCallback().then(function (aaa) {
+            window.location = "index.html";
+        }).catch(function (e) {
+            console.error(e);
         });
     }
 

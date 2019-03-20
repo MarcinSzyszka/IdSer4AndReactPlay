@@ -39,7 +39,7 @@ namespace Adverts.App
                     options.ApiName = "api1";
                     options.ApiSecret = "secret";
                     options.EnableCaching = true;
-                    options.CacheDuration = TimeSpan.FromMinutes(1);
+                    options.CacheDuration = TimeSpan.FromMinutes(0);
                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
