@@ -12,15 +12,23 @@ export class Counter extends Component {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
 
+    //TODO subscribe callback userLoaded!
     var thisObj = this;
-    OidcUserManagerSingletonFactory.GetInstance().getUser().then(function (user) {
-      debugger;
+    OidcUserManagerSingletonFactory.GetInstance().getUser().then(function (user) 
+    {
       if (user) {
         console.log("User logged in", user.profile);
         thisObj.setState({ userIsLogged: true, user: user })
       }
       else {
-        OidcUserManagerSingletonFactory.GetInstance().signinSilent().then();
+        OidcUserManagerSingletonFactory.GetInstance().signinSilent().then(user => {
+          OidcUserManagerSingletonFactory.GetInstance().getUser().then(function (user) {
+            if (user) {
+              console.log("User logged in", user.profile);
+              thisObj.setState({ userIsLogged: true, user: user })
+            }
+          });
+        });
         console.log("User not logged in");
         thisObj.setState({ userIsLogged: false, user: user });
       }
