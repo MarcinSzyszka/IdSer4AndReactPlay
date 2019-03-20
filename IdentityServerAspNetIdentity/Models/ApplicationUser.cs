@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Collections.Generic;
+using IdentityServerAspNetIdentity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityServerAspNetIdentity.Models
 {
